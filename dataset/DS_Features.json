@@ -1,0 +1,71 @@
+{
+	"name": "DS_Features",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSGen2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "features",
+				"folderPath": "staging/features",
+				"fileSystem": "parent"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Store",
+				"type": "INT32"
+			},
+			{
+				"name": "Date",
+				"type": "DATE"
+			},
+			{
+				"name": "Temperature",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Fuel_Price",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "MarkDown1",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "MarkDown2",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "MarkDown3",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "MarkDown4",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "MarkDown5",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "CPI",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Unemployment",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "IsHoliday",
+				"type": "BOOLEAN"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

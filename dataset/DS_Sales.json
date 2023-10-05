@@ -1,0 +1,43 @@
+{
+	"name": "DS_Sales",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSGen2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "sales",
+				"folderPath": "staging/sales",
+				"fileSystem": "parent"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Store",
+				"type": "INT32"
+			},
+			{
+				"name": "Dept",
+				"type": "INT32"
+			},
+			{
+				"name": "Date",
+				"type": "DATE"
+			},
+			{
+				"name": "Weekly_Sales",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "IsHoliday",
+				"type": "BOOLEAN"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

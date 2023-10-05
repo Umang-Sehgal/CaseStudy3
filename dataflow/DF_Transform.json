@@ -1,0 +1,129 @@
+{
+	"name": "DF_Transform",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sales",
+						"type": "DatasetReference"
+					},
+					"name": "SalesDataset"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Stores",
+						"type": "DatasetReference"
+					},
+					"name": "StoresDataset"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Features",
+						"type": "DatasetReference"
+					},
+					"name": "FeaturesDataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Destination",
+						"type": "DatasetReference"
+					},
+					"name": "Destination"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Destination",
+						"type": "DatasetReference"
+					},
+					"name": "Destination2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join"
+				},
+				{
+					"name": "select"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Store as integer,",
+				"          Dept as integer,",
+				"          Date as date,",
+				"          Weekly_Sales as double,",
+				"          IsHoliday as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> SalesDataset",
+				"source(output(",
+				"          Store as integer,",
+				"          Type as string,",
+				"          Size as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> StoresDataset",
+				"source(output(",
+				"          Store as integer,",
+				"          Date as date,",
+				"          Temperature as double,",
+				"          Fuel_Price as double,",
+				"          MarkDown1 as double,",
+				"          MarkDown2 as double,",
+				"          MarkDown3 as double,",
+				"          MarkDown4 as double,",
+				"          MarkDown5 as double,",
+				"          CPI as double,",
+				"          Unemployment as double,",
+				"          IsHoliday as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> FeaturesDataset",
+				"SalesDataset, StoresDataset join(SalesDataset@Store == StoresDataset@Store,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join",
+				"join select(mapColumn(",
+				"          Store = SalesDataset@Store,",
+				"          Dept,",
+				"          Date,",
+				"          Weekly_Sales,",
+				"          IsHoliday,",
+				"          Type,",
+				"          Size",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select",
+				"select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['combined'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> Destination",
+				"FeaturesDataset sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['features'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> Destination2"
+			]
+		}
+	}
+}

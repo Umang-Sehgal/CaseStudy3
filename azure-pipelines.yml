@@ -1,0 +1,35 @@
+trigger:
+- '*'
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    git config --global user.email "youremail@example.com"
+    git config --global user.name "Your Name"
+  displayName: 'Configure Git'
+
+- checkout: self
+  persistCredentials: true
+
+- script: |
+    git clone https://github.com/YourGitHubUsername/YourGitHubRepo.git
+    cd YourGitHubRepo
+    cp -r ../YourAzureDevOpsRepo/* .
+    git add .
+    git commit -m "Migrate ADF artifacts from Azure DevOps"
+    
+    # Hardcode your PAT here
+    git -c http.extraheader="AUTHORIZATION: bearer YOUR_PAT_HERE" push
+  displayName: 'Migrate ADF Artifacts'
+
+- powershell: |
+    Write-Host "ADF artifacts have been migrated to GitHub successfully!"
+  displayName: 'Finalize Migration'
+
